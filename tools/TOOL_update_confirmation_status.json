@@ -1,0 +1,25 @@
+{
+  "type": "function",
+  "function": {
+    "name": "update_confirmation_status",
+    "description": "Updates the appointment confirmation status in the CRM. Use this during confirmation calls after the customer confirms, cancels, or requests to reschedule.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["confirmed", "cancelled", "reschedule", "no_answer"],
+          "description": "Confirmation status: confirmed (customer confirmed), cancelled (customer cancelled), reschedule (customer wants new time), no_answer (customer didn't answer)"
+        }
+      },
+      "required": ["status"]
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+

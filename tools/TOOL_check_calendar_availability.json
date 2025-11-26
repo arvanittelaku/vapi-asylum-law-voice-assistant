@@ -1,0 +1,24 @@
+{
+  "type": "function",
+  "function": {
+    "name": "check_calendar_availability",
+    "description": "Checks available time slots in the AsylumLaw consultation calendar for a given date. Use this when the customer wants to book or reschedule an appointment. Returns available times in their local timezone.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Date to check availability for in YYYY-MM-DD format. Example: 2024-01-15"
+        }
+      },
+      "required": ["date"]
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+

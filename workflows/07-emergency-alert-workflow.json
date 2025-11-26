@@ -1,0 +1,52 @@
+{
+  "name": "AsylumLaw - Emergency Alert",
+  "description": "Handles emergency cases - immediate team notification",
+  "trigger": {
+    "type": "custom_field_changed",
+    "filters": [
+      {
+        "field": "emergency_flag",
+        "operator": "equals",
+        "value": "true"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "send-emergency-email",
+      "type": "send_email",
+      "config": {
+        "to": "{{TEAM_NOTIFICATION_EMAIL}}",
+        "subject": "🚨 URGENT: Emergency Case - {{contact.first_name}} {{contact.last_name}}",
+        "body": "EMERGENCY CASE FLAGGED\n\n**Contact:** {{contact.first_name}} {{contact.last_name}}\n**Phone:** {{contact.phone}}\n**Email:** {{contact.email}}\n\n**Emergency Type:** {{contact.custom_field.emergency_type}}\n\n**Details:**\n{{contact.custom_field.emergency_notes}}\n\nPlease contact this person IMMEDIATELY.\n\nContact ID: {{contact.id}}"
+      }
+    },
+    {
+      "id": "send-emergency-sms-to-duty",
+      "type": "send_sms",
+      "config": {
+        "to": "{{EMERGENCY_DUTY_PHONE}}",
+        "message": "🚨 EMERGENCY: {{contact.first_name}} {{contact.last_name}} needs immediate help. Type: {{contact.custom_field.emergency_type}}. Phone: {{contact.phone}}. Check email for details."
+      }
+    },
+    {
+      "id": "create-urgent-task",
+      "type": "create_task",
+      "config": {
+        "title": "🚨 EMERGENCY: {{contact.first_name}} {{contact.last_name}}",
+        "description": "Emergency case requiring immediate attention.\n\nType: {{contact.custom_field.emergency_type}}\nNotes: {{contact.custom_field.emergency_notes}}\n\nContact: {{contact.phone}}",
+        "due_date": "today",
+        "priority": "urgent"
+      }
+    },
+    {
+      "id": "add-emergency-tag",
+      "type": "update_contact",
+      "config": {
+        "tags_add": ["emergency", "priority-review"]
+      }
+    }
+  ],
+  "notes": "Triggered when emergency_flag is set to true. Immediately notifies team via email and SMS, and creates urgent task."
+}
+

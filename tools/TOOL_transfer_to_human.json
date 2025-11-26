@@ -1,0 +1,33 @@
+{
+  "type": "function",
+  "function": {
+    "name": "transfer_to_human",
+    "description": "Transfers the call to a human handler. Use this for emergency situations, unaccompanied minors, detained persons, interpreter needs, or when the customer explicitly requests to speak with a person.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "Reason for transfer: danger, detained, minor, interpreter, court_hearing, customer_request, complex_case"
+        },
+        "urgency": {
+          "type": "string",
+          "enum": ["immediate", "high", "normal"],
+          "description": "Urgency level: immediate (danger/detained/minor), high (court hearing soon), normal (other)"
+        },
+        "details": {
+          "type": "string",
+          "description": "Brief details about the situation to help the human handler"
+        }
+      },
+      "required": ["reason", "urgency"]
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+

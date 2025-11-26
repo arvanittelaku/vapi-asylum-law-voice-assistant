@@ -1,0 +1,35 @@
+{
+  "name": "AsylumLaw - Appointment Confirmed",
+  "description": "Handles confirmed appointments - sends thank you message",
+  "trigger": {
+    "type": "custom_field_changed",
+    "filters": [
+      {
+        "field": "confirmation_status",
+        "operator": "equals",
+        "value": "confirmed"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "send-confirmation-sms",
+      "type": "send_sms",
+      "config": {
+        "to": "{{contact.phone}}",
+        "message": "Hi {{contact.first_name}},\n\n✅ Thank you for confirming your consultation with AsylumLaw!\n\nWe look forward to speaking with you. An IAA Level 3 specialist will call you at your scheduled time.\n\nIf you need to make any changes, call us: 020 3006 9533\n\n- AsylumLaw Team"
+      }
+    },
+    {
+      "id": "send-confirmation-email",
+      "type": "send_email",
+      "config": {
+        "to": "{{contact.email}}",
+        "subject": "Your AsylumLaw Consultation is Confirmed ✅",
+        "template": "appointment_confirmed"
+      }
+    }
+  ],
+  "notes": "Triggered when confirmation status is set to 'confirmed'. Sends thank you messages."
+}
+

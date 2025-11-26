@@ -1,0 +1,45 @@
+{
+  "name": "AsylumLaw - Initial Contact Call",
+  "description": "Triggers outbound call to new asylum inquiry contacts",
+  "trigger": {
+    "type": "contact_created",
+    "filters": [
+      {
+        "field": "tags",
+        "operator": "contains",
+        "value": "asylum-intake"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "wait-1min",
+      "type": "wait",
+      "config": {
+        "duration": 1,
+        "unit": "minutes"
+      },
+      "note": "Wait 1 minute to ensure contact is fully created"
+    },
+    {
+      "id": "trigger-call",
+      "type": "webhook",
+      "config": {
+        "url": "{{WEBHOOK_BASE_URL}}/webhook/ghl/trigger-call",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "contact_id": "{{contact.id}}",
+          "customer_name": "{{contact.first_name}} {{contact.last_name}}",
+          "customer_phone": "{{contact.phone}}",
+          "customer_email": "{{contact.email}}",
+          "lead_source": "{{contact.source}}"
+        }
+      }
+    }
+  ],
+  "notes": "This workflow triggers when a new asylum inquiry is created. It waits 1 minute then calls the webhook to initiate an outbound AI call."
+}
+

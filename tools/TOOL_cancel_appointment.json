@@ -1,0 +1,24 @@
+{
+  "type": "function",
+  "function": {
+    "name": "cancel_appointment",
+    "description": "Cancels an existing appointment. Use this when the customer wants to cancel their consultation, either during a confirmation call or when they request cancellation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "Brief reason for cancellation provided by the customer"
+        }
+      },
+      "required": []
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+

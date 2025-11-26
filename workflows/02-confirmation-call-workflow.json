@@ -1,0 +1,48 @@
+{
+  "name": "AsylumLaw - Confirmation Call (1 Hour Before)",
+  "description": "Triggers confirmation call 1 hour before scheduled consultation",
+  "trigger": {
+    "type": "appointment_created",
+    "filters": [
+      {
+        "field": "calendar_id",
+        "operator": "equals",
+        "value": "{{GHL_CALENDAR_ID}}"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "wait-until-1h-before",
+      "type": "wait_until",
+      "config": {
+        "datetime": "{{appointment.start_time}}",
+        "offset": -60,
+        "offset_unit": "minutes"
+      },
+      "note": "Wait until 1 hour before appointment"
+    },
+    {
+      "id": "trigger-confirmation",
+      "type": "webhook",
+      "config": {
+        "url": "{{WEBHOOK_BASE_URL}}/webhook/ghl/trigger-confirmation",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "contact_id": "{{contact.id}}",
+          "appointment_id": "{{appointment.id}}",
+          "customer_name": "{{contact.first_name}} {{contact.last_name}}",
+          "customer_phone": "{{contact.phone}}",
+          "appointment_time": "{{appointment.start_time}}",
+          "appointment_type": "{{appointment.title}}",
+          "timezone": "{{contact.custom_field.timezone}}"
+        }
+      }
+    }
+  ],
+  "notes": "This workflow waits until 1 hour before an appointment, then triggers a confirmation call via the AI assistant."
+}
+

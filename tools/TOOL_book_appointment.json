@@ -1,0 +1,32 @@
+{
+  "type": "function",
+  "function": {
+    "name": "book_appointment",
+    "description": "Books a consultation appointment in the AsylumLaw calendar. Use this after the customer has selected a time slot from check_calendar_availability. The appointment will be for an Initial Consultation regarding their asylum case.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Appointment date in YYYY-MM-DD format"
+        },
+        "time": {
+          "type": "string",
+          "description": "Appointment time in HH:mm format (24-hour). Example: 14:00 for 2 PM"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional brief notes about the case or any special requirements"
+        }
+      },
+      "required": ["date", "time"]
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+

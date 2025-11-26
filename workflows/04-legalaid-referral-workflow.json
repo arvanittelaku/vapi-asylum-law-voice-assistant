@@ -1,0 +1,50 @@
+{
+  "name": "AsylumLaw - Legal Aid Referral",
+  "description": "Handles Legal Aid path - sends referral to partner and notifies client",
+  "trigger": {
+    "type": "custom_field_changed",
+    "filters": [
+      {
+        "field": "triage_status",
+        "operator": "equals",
+        "value": "legalaid"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "send-referral-email",
+      "type": "send_email",
+      "config": {
+        "to": "{{LEGAL_AID_PARTNER_EMAIL}}",
+        "cc": "{{contact.email}}",
+        "subject": "Legal Aid Referral: {{contact.first_name}} {{contact.last_name}}",
+        "body": "Please find a new Legal Aid enquiry.\n\n**Summary:**\n- Name: {{contact.first_name}} {{contact.last_name}}\n- Nationality: {{contact.custom_field.nationality}}\n- Contact: {{contact.phone}}, {{contact.email}}\n- Location: {{contact.custom_field.current_country}}\n- UK Entry Date: {{contact.custom_field.uk_entry_date}}\n- Immigration Status: {{contact.custom_field.immigration_status}}\n- Reason: {{contact.custom_field.asylum_reason}}\n- Family included: {{contact.custom_field.family_included}}\n- Family details: {{contact.custom_field.family_details}}\n\nWe have consent to share these details.\n\nRegards,\nAsylumLaw.co.uk"
+      }
+    },
+    {
+      "id": "send-client-acknowledgment",
+      "type": "send_sms",
+      "config": {
+        "to": "{{contact.phone}}",
+        "message": "Hi {{contact.first_name}},\n\nWe've referred your case to our Legal Aid partner. They will contact you within 48 hours.\n\nLegal Aid typically involves longer waiting times but covers the full cost of representation.\n\nIf you'd prefer faster private support, call us: 020 3006 9533\n\n- AsylumLaw Team"
+      }
+    },
+    {
+      "id": "add-tags",
+      "type": "update_contact",
+      "config": {
+        "tags_add": ["legalaid", "referred"]
+      }
+    },
+    {
+      "id": "move-pipeline",
+      "type": "move_pipeline",
+      "config": {
+        "stage": "Legal Aid - Referred"
+      }
+    }
+  ],
+  "notes": "This workflow handles Legal Aid referrals. It sends the referral to the partner, notifies the client, and updates the contact status."
+}
+

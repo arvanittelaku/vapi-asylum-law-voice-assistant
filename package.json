@@ -1,0 +1,51 @@
+{
+  "name": "asylumlaw-voice-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered voice assistant for AsylumLaw.co.uk - Asylum intake and triage system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "deploy:intake": "node scripts/deploy-intake-assistant.js",
+    "deploy:emergency": "node scripts/deploy-emergency-assistant.js",
+    "deploy:confirmation": "node scripts/deploy-confirmation-assistant.js",
+    "deploy:all": "npm run deploy:intake && npm run deploy:emergency && npm run deploy:confirmation",
+    "configure:phones": "node scripts/configure-phone-numbers.js",
+    "verify": "node scripts/verify-deployment.js",
+    "test:retry": "node scripts/test-smart-retry.js",
+    "test:local": "node scripts/test-local.js",
+    "get:fields": "node scripts/get-custom-field-ids.js",
+    "prelaunch": "node scripts/pre-launch-checklist.js",
+    "test:functions": "node scripts/test-all-functions.js",
+    "test:edge": "node scripts/test-edge-cases.js",
+    "test:ai": "node scripts/test-ai-conversation.js",
+    "test:advanced": "node scripts/test-advanced-edge-cases.js",
+    "test:all": "npm run test:functions && npm run test:edge && npm run test:advanced && npm run test:ai"
+  },
+  "keywords": [
+    "vapi",
+    "voice-assistant",
+    "asylum",
+    "immigration",
+    "gohighlevel",
+    "twilio"
+  ],
+  "author": "AsylumLaw.co.uk",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "luxon": "^3.4.4",
+    "stripe": "^14.25.0",
+    "twilio": "^4.19.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

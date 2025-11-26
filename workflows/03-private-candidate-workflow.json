@@ -1,0 +1,65 @@
+{
+  "name": "AsylumLaw - Private Candidate Booking",
+  "description": "Handles Private consultation path - sends booking link and payment prompt",
+  "trigger": {
+    "type": "custom_field_changed",
+    "filters": [
+      {
+        "field": "triage_status",
+        "operator": "equals",
+        "value": "private-candidate"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "send-booking-sms",
+      "type": "send_sms",
+      "config": {
+        "to": "{{contact.phone}}",
+        "message": "Hi {{contact.first_name}},\n\nThank you for speaking with AsylumLaw. Based on what you've shared, we can start immediately on a private basis.\n\nTo secure your consultation, there's a refundable credit which we fully deduct from any final fee if you proceed.\n\n📅 Book now: {{BOOKING_LINK}}\n\nQuestions? Call us: 020 3006 9533\n\n- AsylumLaw Team"
+      }
+    },
+    {
+      "id": "send-booking-email",
+      "type": "send_email",
+      "config": {
+        "to": "{{contact.email}}",
+        "subject": "Book Your AsylumLaw Consultation",
+        "template": "private_booking_prompt"
+      }
+    },
+    {
+      "id": "wait-for-booking",
+      "type": "wait",
+      "config": {
+        "duration": 2,
+        "unit": "hours"
+      }
+    },
+    {
+      "id": "check-booking-status",
+      "type": "condition",
+      "config": {
+        "conditions": [
+          {
+            "field": "appointments",
+            "operator": "has_upcoming"
+          }
+        ],
+        "if_true": "end",
+        "if_false": "send-reminder"
+      }
+    },
+    {
+      "id": "send-reminder",
+      "type": "send_sms",
+      "config": {
+        "to": "{{contact.phone}}",
+        "message": "Hi {{contact.first_name}},\n\nJust a friendly reminder - your consultation isn't secured yet.\n\nBook now to speak with an IAA Level 3 specialist: {{BOOKING_LINK}}\n\nWe're here to help with your asylum case.\n\n- AsylumLaw Team"
+      }
+    }
+  ],
+  "notes": "This workflow handles contacts triaged as private candidates. It sends booking prompts and follow-up reminders."
+}
+

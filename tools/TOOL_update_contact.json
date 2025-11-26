@@ -1,0 +1,67 @@
+{
+  "type": "function",
+  "function": {
+    "name": "update_contact",
+    "description": "Saves or updates the caller's information in the CRM system. Use this to record asylum intake information collected during the conversation.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Customer's first name as per passport/ID"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Customer's last name as per passport/ID"
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Customer's nationality/country of origin"
+        },
+        "currentCountry": {
+          "type": "string",
+          "description": "Country where customer is currently located"
+        },
+        "ukEntryDate": {
+          "type": "string",
+          "description": "Date of latest UK entry if applicable (DD/MM/YYYY format)"
+        },
+        "immigrationStatus": {
+          "type": "string",
+          "description": "Current immigration or residence status if known"
+        },
+        "asylumReason": {
+          "type": "string",
+          "description": "Brief reason for seeking asylum (1-3 sentences)"
+        },
+        "familyIncluded": {
+          "type": "string",
+          "enum": ["yes", "no"],
+          "description": "Whether family members are included in the claim"
+        },
+        "familyDetails": {
+          "type": "string",
+          "description": "Names and dates of birth of family members if included"
+        },
+        "preferredChannel": {
+          "type": "string",
+          "enum": ["sms", "whatsapp", "email"],
+          "description": "Customer's preferred contact channel for updates"
+        },
+        "triageStatus": {
+          "type": "string",
+          "enum": ["private-candidate", "legalaid"],
+          "description": "Triage status: private-candidate for paid services, legalaid for Legal Aid referral"
+        }
+      },
+      "required": ["firstName", "lastName", "nationality"]
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+

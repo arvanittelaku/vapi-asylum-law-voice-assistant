@@ -1,0 +1,52 @@
+{
+  "name": "AsylumLaw - No Answer (SMS Fallback)",
+  "description": "Handles contacts who didn't answer after 3 call attempts",
+  "trigger": {
+    "type": "custom_field_changed",
+    "filters": [
+      {
+        "field": "call_attempts",
+        "operator": "equals",
+        "value": "3"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "send-fallback-sms",
+      "type": "send_sms",
+      "config": {
+        "to": "{{contact.phone}}",
+        "message": "Hi {{contact.first_name}},\n\nWe tried calling you 3 times about your consultation with AsylumLaw.\n\n📅 Book your appointment: {{BOOKING_LINK}}\n📞 Call us: 020 3006 9533\n\nWe're here to help with your asylum case whenever you're ready.\n\n- AsylumLaw Team"
+      }
+    },
+    {
+      "id": "send-team-notification",
+      "type": "send_email",
+      "config": {
+        "to": "{{TEAM_NOTIFICATION_EMAIL}}",
+        "subject": "🚨 Unable to Reach: {{contact.first_name}} {{contact.last_name}}",
+        "body": "We attempted to call {{contact.first_name}} {{contact.last_name}} ({{contact.phone}}) 3 times without success.\n\nLast attempt: {{contact.custom_field.last_call_time}}\n\nPlease follow up manually.\n\nContact ID: {{contact.id}}"
+      }
+    },
+    {
+      "id": "create-followup-task",
+      "type": "create_task",
+      "config": {
+        "title": "Manual Follow Up Required - {{contact.first_name}} {{contact.last_name}}",
+        "description": "Unable to reach by phone after 3 attempts. Please follow up via SMS, WhatsApp, or email.",
+        "due_date": "today",
+        "priority": "high"
+      }
+    },
+    {
+      "id": "add-tag",
+      "type": "update_contact",
+      "config": {
+        "tags_add": ["unreachable", "needs-manual-followup"]
+      }
+    }
+  ],
+  "notes": "Triggered when call_attempts reaches 3. Sends SMS fallback, notifies team, and creates follow-up task."
+}
+

@@ -1,0 +1,57 @@
+{
+  "type": "function",
+  "function": {
+    "name": "send_referral_email",
+    "description": "Send a Legal Aid referral email to the partner organization. Use this when the caller has chosen the Legal Aid path. This sends their details to the Legal Aid partner who will contact them within 48 hours.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string",
+          "description": "Client's first name"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Client's last name"
+        },
+        "nationality": {
+          "type": "string",
+          "description": "Client's nationality"
+        },
+        "currentCountry": {
+          "type": "string",
+          "description": "Country where client is currently located"
+        },
+        "ukEntryDate": {
+          "type": "string",
+          "description": "Date client entered the UK (if applicable)"
+        },
+        "immigrationStatus": {
+          "type": "string",
+          "description": "Client's current immigration status"
+        },
+        "asylumReason": {
+          "type": "string",
+          "description": "Brief reason for seeking asylum (1-3 sentences)"
+        },
+        "familyIncluded": {
+          "type": "string",
+          "enum": ["yes", "no"],
+          "description": "Whether family members are included in the claim"
+        },
+        "familyDetails": {
+          "type": "string",
+          "description": "Names and dates of birth of family members if included"
+        }
+      },
+      "required": ["firstName", "lastName", "nationality", "asylumReason"]
+    }
+  },
+  "server": {
+    "url": "{{WEBHOOK_BASE_URL}}/webhook/vapi",
+    "method": "POST",
+    "timeout": 20
+  },
+  "async": true
+}
+
