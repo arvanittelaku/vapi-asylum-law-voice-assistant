@@ -172,6 +172,85 @@ npm start
 5. **No Answer (3 attempts)** - SMS fallback + team alert
 6. **Emergency Alert** - Immediate human notification
 
+## 🐳 Docker Deployment (AWS ECS Fargate)
+
+### Build & Run Locally
+
+```bash
+# Build the image
+docker build -t asylumlaw-voice-assistant:latest .
+
+# Run locally (create .env file first from env.template)
+docker run -d \
+  --name asylumlaw-voice \
+  -p 3000:3000 \
+  --env-file .env \
+  asylumlaw-voice-assistant:latest
+
+# Verify it's running
+curl http://localhost:3000/health
+```
+
+### Required Environment Variables
+
+Pass these via ECS Task Definition secrets or environment:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `VAPI_API_KEY` | ✅ | VAPI platform API key |
+| `VAPI_INTAKE_ASSISTANT_ID` | ✅ | Deployed intake assistant ID |
+| `VAPI_CONFIRMATION_ASSISTANT_ID` | ✅ | Deployed confirmation assistant ID |
+| `VAPI_EMERGENCY_ASSISTANT_ID` | ✅ | Deployed emergency assistant ID |
+| `GHL_API_KEY` | ✅ | GoHighLevel API key |
+| `GHL_LOCATION_ID` | ✅ | GHL location/sub-account ID |
+| `GHL_CALENDAR_ID` | ✅ | GHL calendar ID for bookings |
+| `TWILIO_ACCOUNT_SID` | ✅ | Twilio account SID (SMS) |
+| `TWILIO_AUTH_TOKEN` | ✅ | Twilio auth token |
+| `TWILIO_PHONE_NUMBER` | ✅ | Twilio sender number (+44...) |
+| `STRIPE_SECRET_KEY` | ⚠️ | Stripe secret (for payments) |
+| `NODE_ENV` | ⚠️ | Set to `production` |
+| `PORT` | ⚠️ | Default: 3000 |
+
+See `env.template` for full list including GHL custom field IDs.
+
+### Push to ECR & Deploy to Fargate
+
+```bash
+# Login to ECR (replace with your region/account)
+aws ecr get-login-password --region eu-west-2 | \
+  docker login --username AWS --password-stdin 123456789.dkr.ecr.eu-west-2.amazonaws.com
+
+# Tag and push
+docker tag asylumlaw-voice-assistant:latest \
+  123456789.dkr.ecr.eu-west-2.amazonaws.com/asylumlaw-voice:latest
+
+docker push 123456789.dkr.ecr.eu-west-2.amazonaws.com/asylumlaw-voice:latest
+```
+
+### ECS Task Definition Notes
+
+- **CPU**: 256 (0.25 vCPU) sufficient for webhook server
+- **Memory**: 512 MB sufficient
+- **Port**: Container port 3000
+- **Health Check**: `GET /health` returns 200
+- **Secrets**: Use AWS Secrets Manager for API keys
+
+### Image Details
+
+| Property | Value |
+|----------|-------|
+| Base Image | `node:18-alpine` (~50MB) |
+| Final Size | ~100MB (with deps) |
+| User | Non-root (`nodejs:1001`) |
+| Entry Point | `node server.js` |
+| Health Check | Built-in (`/health`) |
+
+### No Audio Libraries Needed
+
+This container is a **webhook server only**. VAPI handles all audio processing externally. No ffmpeg, libsndfile, or other audio tools required.
+
+---
+
 ## 📝 License
 
 ISC

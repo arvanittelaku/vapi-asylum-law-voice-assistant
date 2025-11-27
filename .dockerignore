@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+
+# Development/test files
+scripts/
+tools/
+workflows/
+docs/
+
+# Environment files (secrets - pass via env vars)
+.env
+.env.*
+env.template
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Misc
+*.md
+!README.md
+LICENSE
+
